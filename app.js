@@ -1,11 +1,23 @@
-const express = require('express')
-const dotenv = require('dotenv')
+const express = require("express")
+const dotenv = require("dotenv")
+const morgan = require('morgan')
+
+const connecrDB = require('./config/db')
+const connectDB = require("./config/db")
 
 // Load config
-dotenv.config({path: './config/config.env'})
+dotenv.config({ path: "./config/config.env" })
 
+connectDB()
 const app = express()
+//logging
+if(process.env.NODE_ENV === 'developpement')
+{
+    app.use(morgan('dev'))
+}
+const PORT = process.env.PORT || 3000;
 
-const PORT = process.env.PORT || 3000
-
-app.listen(PORT, console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`))
+app.listen(
+  PORT,
+  console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`)
+);
