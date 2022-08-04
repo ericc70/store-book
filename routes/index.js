@@ -1,6 +1,8 @@
 const express = require('express')
 const router = express.Router()
 
+const passport = require('passport')
+
 //@desc Login/landing page
 //@route GET /
 router.get('/', (req, res) => {
@@ -19,6 +21,10 @@ router.get('/dashboard', (req, res) => {
 
 
 
-
+router.get('/oauth2/redirect/google',
+  passport.authenticate('google', { failureRedirect: '/login', failureMessage: true }),
+  function(req, res) {
+    res.redirect('/');
+  });
 
 module.exports = router
