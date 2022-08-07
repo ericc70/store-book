@@ -1,6 +1,7 @@
+
 <h2>Your Life</h2>
 <div class="row">
- {{stories}}
+
 {{#if stories}}
 
     {{#each stories}}
@@ -16,7 +17,7 @@
                 <br>
                 <div class="chip">
                     <img src="{{User.image}}" alt="">
-                    <a href="/stories/user/{{User._id}}">{{User.displayName}}</a>
+                    <a href="/stories/user/{{user._id}}">{{User.displayName}}</a>
                 </div>
             </div>
             <div class="card-action center-align">
@@ -30,3 +31,4 @@
     <p>No stories to display</p>
     {{/if}}
 </div>
+

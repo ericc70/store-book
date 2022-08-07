@@ -26,23 +26,23 @@ router.post('/', ensureAuth, async (req, res) => {
   }
 })
 
-// @desc    Show all storie
+// @desc    Show all stories
 // @route   GET /stories
 router.get('/', ensureAuth, async (req, res) => {
   try {
-    const stories = await Story.find({status: 'public'}).lean()
-    .populate('User')
-    .sort({createdAt: 'desc'})
+    const stories = await Story.find({ status: 'public' })
+      .populate('User')
+      .sort({ createdAt: 'desc' })
+      .lean()
 
-    res.render('stories/index', {stories  }) 
-  } catch (error) {
-    console.log(err)
+      console.log(stories)
+    res.render('stories/index', {
+      stories,
+    })
+  } catch (err) {
+    console.error(err)
     res.render('error/500')
-
-    
   }
-
-
 })
 
 
