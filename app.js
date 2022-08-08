@@ -28,7 +28,7 @@ if (process.env.NODE_ENV === "developpement") {
 }
 
 // Handlebars helpers
-const { formatDate, truncate, stripTags } = require("./helpers/hbs");
+const { formatDate, truncate, stripTags, editIcon } = require("./helpers/hbs");
 
 //handlebar
 app.engine(
@@ -37,7 +37,9 @@ app.engine(
     helpers: { 
       formatDate,
       truncate,
-      stripTags },
+      stripTags,
+    editIcon
+   },
     defaultLayout: "main",
     extname: ".hbs",
   })
@@ -60,6 +62,12 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+
+// Set global var
+app.use(function (req, res, next) {
+  res.locals.user = req.user || null
+  next()
+})
 //Static folder
 app.use(express.static(path.join(__dirname, "public")));
 
