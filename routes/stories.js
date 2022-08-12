@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const { ensureAuth, ensureGuest } = require("../middleware/auth");
+const {
+  ensureAuth,
+  ensureGuest
+} = require("../middleware/auth");
 const Story = require("../models/Story");
 
 // const Story = require('../models/Story')
@@ -16,7 +19,7 @@ router.get("/add", ensureAuth, (req, res) => {
 // @route   GET /stories/:id
 router.get('/:id', ensureAuth, async (req, res) => {
   try {
-    let story = await Story.findById(req.params.id).populate('user').lean()
+    let story = await Story.findById(req.params.id).populate('User').lean()
 
     if (!story) {
       return res.render('error/404')
@@ -24,11 +27,12 @@ router.get('/:id', ensureAuth, async (req, res) => {
 
     if (story.User._id != req.user.id && story.status == 'private') {
       res.render('error/404')
-    } else {
-      res.render('stories/show', {
-        story,
-      })
-    }
+    } 
+
+    res.render('stories/show', {
+      story,
+    })
+
   } catch (err) {
     console.error(err)
     res.render('error/404')
@@ -39,7 +43,7 @@ router.get('/:id', ensureAuth, async (req, res) => {
 // @desc    process add form
 // @route   GET /stories/
 router.post("/", ensureAuth, async (req, res) => {
- 
+
   try {
     req.body.User = req.user.id;
     await Story.create(req.body);
@@ -54,9 +58,13 @@ router.post("/", ensureAuth, async (req, res) => {
 // @route   GET /stories
 router.get("/", ensureAuth, async (req, res) => {
   try {
-    const stories = await Story.find({ status: "public" })
+    const stories = await Story.find({
+        status: "public"
+      })
       .populate("User")
-      .sort({ createdAt: "desc" })
+      .sort({
+        createdAt: "desc"
+      })
       .lean();
 
     res.render("stories/index", {
@@ -80,11 +88,10 @@ router.get("/edit/:id", ensureAuth, async (req, res) => {
   }
 
   if (story.User != req.user.id) {
-   res.redirect('/stories')
-  }
-  else{
- 
-    res.render('./stories/edit',{
+    res.redirect('/stories')
+  } else {
+
+    res.render('./stories/edit', {
       story,
     })
   }
@@ -94,7 +101,7 @@ router.get("/edit/:id", ensureAuth, async (req, res) => {
 // @desc    Update story
 // @route   PUT /stories/:id
 router.put('/:id', ensureAuth, async (req, res) => {
- 
+
   try {
     let story = await Story.findById(req.params.id).lean()
 
@@ -103,11 +110,13 @@ router.put('/:id', ensureAuth, async (req, res) => {
     }
 
     if (story.User != req.user.id) {
-      
+
       res.redirect('/stories')
     } else {
 
-      story = await Story.findOneAndUpdate({ _id: req.params.id }, req.body, {
+      story = await Story.findOneAndUpdate({
+        _id: req.params.id
+      }, req.body, {
         new: true,
         runValidators: true,
       })
@@ -122,17 +131,20 @@ router.put('/:id', ensureAuth, async (req, res) => {
 
 //@desc delete story
 //@route DELETE /stories/:id
-router.delete('/:id', ensureAuth, async(req, res) =>{
+router.delete('/:id', ensureAuth, async (req, res) => {
   try {
-    await Story.deleteOne({_id: req.params.id})
+    await Story.deleteOne({
+      _id: req.params.id
+    })
     res.redirect('/dashboard')
 
   } catch (error) {
     console.error(err)
     return res.render('error/500')
-    
+
   }
 })
+
 
 
 module.exports = router;
