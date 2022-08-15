@@ -26,6 +26,7 @@ router.get('/:id', ensureAuth, async (req, res) => {
     }
 
     if (story.User._id != req.user.id && story.status == 'private') {
+     
       res.render('error/404')
     } 
 
@@ -144,6 +145,30 @@ router.delete('/:id', ensureAuth, async (req, res) => {
 
   }
 })
+
+
+// @desc    User styories
+// @route   GET /stories/user/:userId
+router.get("/user/:userId", ensureAuth, async (req, res) => {
+ 
+try {
+  const stories = await Story.find({
+    user: req.params.userId,
+    status: 'public'
+  })
+  .populate('User')
+  .lean()
+
+  res.render('stories/index', { stories})
+
+} catch (error) {
+  console.error(err)
+  return res.render('error/500')
+
+}
+
+
+});
 
 
 
